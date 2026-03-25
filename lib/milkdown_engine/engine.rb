@@ -19,8 +19,21 @@ module MilkdownEngine
       app.config.assets.paths << Engine.root.join("app/assets/javascripts")
       app.config.assets.paths << Engine.root.join("app/assets/stylesheets")
 
+      # Stimulus controllers live under app/javascript/ — add it so
+      # importmap pin_all_from URLs resolve through the asset pipeline.
+      app.config.assets.paths << Engine.root.join("app/javascript")
+
       # rails-active-ui ships stylesheets.css directly in app/assets/
       app.config.assets.paths << Ui::Engine.root.join("app/assets")
+    end
+
+    # Append engine migrations so host apps pick them up without copying
+    initializer "milkdown_engine.migrations", after: :load_config_initializers do |app|
+      unless app.root.to_s == root.to_s
+        engine_migrate_path = root.join("db/migrate").to_s
+        app.config.paths["db/migrate"] << engine_migrate_path
+        ActiveRecord::Migrator.migrations_paths << engine_migrate_path
+      end
     end
 
     # Make engine helpers available in host app views

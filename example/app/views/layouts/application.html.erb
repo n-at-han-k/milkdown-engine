@@ -9,10 +9,15 @@
     <%= yield :head %>
 
     <%= stylesheet_link_tag "milkdown_engine/application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "milkdown_engine/milkdown", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
+    <% if notice.present? %>
+      <p style="color: green;"><%= notice %></p>
+    <% end %>
+
     <%= yield %>
   </body>
 </html>

@@ -5,3 +5,5 @@
 /tmp/
 /vendor/bundle
 Gemfile.lock
+.direnv
+node_modules
