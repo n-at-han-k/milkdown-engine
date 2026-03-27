@@ -185,50 +185,39 @@
   color: #999;
 }
 
-/* ── Item list panel ────────────────────────────────── */
+/* ── Item list panel (ResourceListBlock) ────────────── */
 #item-list-panel {
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 
-#item-list-header {
+.resource-list-header {
   padding: 12px 14px 8px;
   flex-shrink: 0;
   border-bottom: 1px solid #eae8e4;
 }
 
-#item-list-header .ui.header {
+.resource-list-header .ui.header {
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
   color: #1a1a1a;
 }
 
-#item-list-search {
+.resource-list-search {
   flex-shrink: 0;
   padding: 0 10px 8px;
 }
 
-#item-list-search .ui.input input {
+.resource-list-search .ui.input input {
   background: #efecea;
   border-color: transparent;
   border-radius: 20px;
   font-size: 0.82rem;
 }
 
-#item-list-banner {
-  flex-shrink: 0;
-  margin: 0 10px 6px;
-}
-
-#item-list-banner .ui.message {
-  font-size: 0.78rem;
-  padding: 8px 12px;
-  border-radius: 8px;
-}
-
-#item-list-scroll {
+.resource-list-items {
   flex: 1;
   overflow-y: auto;
   padding: 4px 0;
