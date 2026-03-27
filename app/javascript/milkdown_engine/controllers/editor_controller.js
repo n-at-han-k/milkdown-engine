@@ -13,7 +13,7 @@ import {
 //        data-milkdown-engine--editor-readonly-value="false">
 //     <input type="hidden"
 //            data-milkdown-engine--editor-target="input"
-//            name="md_document[content]"
+//            name="document[content]"
 //            value='{"type":"doc","content":[]}'>
 //     <div data-milkdown-engine--editor-target="editor"></div>
 //   </div>

@@ -3,7 +3,7 @@
 module MilkdownEngine
   module ApplicationHelper
     CONTROLLER_ID = "milkdown-engine--editor"
-    EMPTY_DOC = { type: "doc", content: [{ type: "paragraph" }] }.to_json.freeze
+    EMPTY_DOC = { type: "doc", content: [ { type: "paragraph" } ] }.to_json.freeze
 
     # Renders a Milkdown editor wired to a hidden <input> for form submission.
     #
@@ -24,12 +24,12 @@ module MilkdownEngine
     # ==== Examples
     #
     #   # Standalone (no form builder)
-    #   <%= milkdown_editor "md_document[content]", @document.content %>
+    #   <%= milkdown_editor "document[content]", @document.content %>
     #
     #   # Inside a Fomantic-UI form
     #   <% Form { %>
     #     <div class="field">
-    #       <%= milkdown_editor "md_document[content]", @document.content, label: "Content" %>
+    #       <%= milkdown_editor "document[content]", @document.content, label: "Content" %>
     #     </div>
     #     <% Button(variant: :primary, type: :submit) { text "Save" } %>
     #   <% } %>
@@ -43,11 +43,11 @@ module MilkdownEngine
       editor_html = html_options.delete(:editor_html) || {}
 
       json_value = case value
-                   when String then value.presence || EMPTY_DOC
-                   when Hash   then value.present? ? value.to_json : EMPTY_DOC
-                   when nil    then EMPTY_DOC
-                   else value.to_json
-                   end
+      when String then value.presence || EMPTY_DOC
+      when Hash   then value.present? ? value.to_json : EMPTY_DOC
+      when nil    then EMPTY_DOC
+      else value.to_json
+      end
 
       extra_class = html_options.delete(:class)
       wrapper_classes = class_names("ui segment milkdown-editor", extra_class)
@@ -83,6 +83,17 @@ module MilkdownEngine
       name   = "#{form.object_name}[#{method}]"
 
       milkdown_editor(name, value, **options)
+    end
+
+    # PascalCase helper for use inside Form() blocks.
+    # Uses @_form_builder set by FormComponent automatically.
+    #
+    #   Form(model: @note, url: note_path(@note)) {
+    #     MilkdownEditor(:content)
+    #   }
+    #
+    def MilkdownEditor(method, **options)
+      output_buffer << milkdown_editor_field(@_form_builder, method, **options)
     end
   end
 end

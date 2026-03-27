@@ -9,7 +9,7 @@ output_buffer << form_with(model: document, url: document.persisted? ? document_
   output_buffer << tag.div(class: "field") {
     safe_join([
       f.label(:title),
-      tag.input(type: "text", name: "md_document[title]", value: document.title, placeholder: "Auto-filled from first heading if blank")
+      tag.input(type: "text", name: "document[title]", value: document.title, placeholder: "Auto-filled from first heading if blank")
     ])
   }
 

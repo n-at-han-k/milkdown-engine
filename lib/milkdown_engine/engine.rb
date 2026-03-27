@@ -6,6 +6,11 @@ module MilkdownEngine
   class Engine < ::Rails::Engine
     isolate_namespace MilkdownEngine
 
+    initializer "milkdown_engine.dependencies" do
+      require "acts-as-taggable-on"
+      require "ransack"
+    end
+
     # Register importmap pins for Stimulus controllers
     initializer "milkdown_engine.importmap", before: "importmap" do |app|
       if app.config.respond_to?(:importmap)
@@ -22,6 +27,9 @@ module MilkdownEngine
       # Stimulus controllers live under app/javascript/ — add it so
       # importmap pin_all_from URLs resolve through the asset pipeline.
       app.config.assets.paths << Engine.root.join("app/javascript")
+
+      # Vendored JS packages
+      app.config.assets.paths << Engine.root.join("vendor/javascript")
 
       # rails-active-ui ships stylesheets.css directly in app/assets/
       app.config.assets.paths << Ui::Engine.root.join("app/assets")

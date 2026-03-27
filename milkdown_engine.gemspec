@@ -5,8 +5,8 @@ require_relative "lib/milkdown_engine/version"
 Gem::Specification.new do |spec|
   spec.name        = "milkdown_engine"
   spec.version     = MilkdownEngine::VERSION
-  spec.authors     = ["Nathan Kidd"]
-  spec.email       = ["nathankidd@hey.com"]
+  spec.authors     = [ "Nathan Kidd" ]
+  spec.email       = [ "nathankidd@hey.com" ]
   spec.homepage    = "https://github.com/n-at-han-k/milkdown-engine"
   spec.summary     = "Rails engine for Milkdown markdown editing"
   spec.description = "Provides a Milkdown-based rich markdown editor as a Rails engine " \
@@ -19,10 +19,12 @@ Gem::Specification.new do |spec|
     Dir["{app,config,db,lib}/**/*", "LICENSE", "Rakefile", "README.md"]
   end
 
-  spec.require_paths = ["lib"]
+  spec.require_paths = [ "lib" ]
 
-  spec.add_dependency "rails",           ">= 8.1"
+  spec.add_dependency "rails",               ">= 8.1"
   spec.add_dependency "importmap-rails"
   spec.add_dependency "stimulus-rails"
   spec.add_dependency "rails-active-ui"
+  spec.add_dependency "acts-as-taggable-on", "~> 13.0"
+  spec.add_dependency "ransack"
 end

@@ -10,6 +10,14 @@
 .milkdown-editor.ui.segment {
   padding: 0;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  margin: 0;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .milkdown-editor-label {
@@ -18,11 +26,52 @@
   font-weight: 700;
   font-size: 0.92857143em;
   color: rgba(0, 0, 0, 0.87);
+  flex-shrink: 0;
 }
 
 /* The inner surface where Crepe mounts the ProseMirror editor. */
 .milkdown-editor-surface {
   min-height: 12rem;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.milkdown-editor-surface .milkdown {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100%;
+}
+
+.milkdown-editor-surface .milkdown .ProseMirror {
+  padding: 15px 15px 15px 40px;
+  flex: 1;
+  min-height: 100%;
+  cursor: text;
+}
+
+/* Title bar: fixed at top, no grow */
+#content-editor .editor-title-bar {
+  flex-shrink: 0;
+  border-bottom: 1px solid #dfe1e4;
+}
+
+/* Content form: fills remaining space, scrolls via milkdown surface */
+#content-editor .editor-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+#content-editor .editor-content .ui.form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  margin: 0;
 }
 
 /* When used inside a Fomantic form field, drop the segment border so it
@@ -37,4 +86,345 @@
 .milkdown-editor[data-milkdown-engine--editor-readonly-value="true"] {
   opacity: 0.75;
   pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Three-panel editor layout
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Prevent parent from scrolling when the editor layout is active */
+#site-content-scroll:has(#md-app) {
+  overflow-y: hidden;
+}
+
+/* ── App shell grid ──────────────────────────────────── */
+#md-app {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas:
+    "item-list-panel  content-editor";
+  height: 100%;
+}
+
+/* ── Zone borders / backgrounds ──────────────────────── */
+#navigation-rail  { grid-area: navigation-rail;  background: #f0ede8; border-right: 1px solid #dddbd7; display: none; }
+#item-list-panel  { grid-area: item-list-panel;  background: #faf9f7; border-right: 1px solid #dddbd7; }
+#content-editor   { grid-area: content-editor;   background: #ffffff; }
+#system-bar       { grid-area: system-bar;        background: #f0ede8; border-top: 1px solid #dddbd7; }
+
+/* ── Navigation rail ────────────────────────────────── */
+#navigation-rail {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#navigation-rail-search {
+  padding: 10px 10px 6px;
+  flex-shrink: 0;
+}
+
+#navigation-rail-search .ui.input input {
+  background: rgba(255,255,255,0.6);
+  border-color: #dddbd7;
+  border-radius: 20px;
+  font-size: 0.82rem;
+}
+
+#navigation-rail-views,
+#navigation-rail-tags {
+  flex-shrink: 0;
+}
+
+#navigation-rail-tags {
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* Rail menus — strip Fomantic box shadows / borders */
+#navigation-rail .ui.vertical.menu {
+  width: 100%;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  margin: 0;
+}
+
+#navigation-rail .ui.vertical.menu .item {
+  padding: 7px 14px;
+  font-size: 0.83rem;
+  color: #555;
+  border-radius: 0;
+}
+
+#navigation-rail .ui.vertical.menu .item.active {
+  background: rgba(255,255,255,0.55);
+  color: #1a1a1a;
+  font-weight: 600;
+  border-left: 3px solid #4a90d9;
+}
+
+#navigation-rail .ui.vertical.menu .item .icon {
+  margin-right: 8px;
+  color: #888;
+  width: 1em;
+}
+
+#navigation-rail .ui.vertical.menu .item.active .icon {
+  color: #4a90d9;
+}
+
+.rail-section-label {
+  padding: 14px 14px 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #999;
+}
+
+/* ── Item list panel ────────────────────────────────── */
+#item-list-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+#item-list-header {
+  padding: 12px 14px 8px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #eae8e4;
+}
+
+#item-list-header .ui.header {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+#item-list-search {
+  flex-shrink: 0;
+  padding: 0 10px 8px;
+}
+
+#item-list-search .ui.input input {
+  background: #efecea;
+  border-color: transparent;
+  border-radius: 20px;
+  font-size: 0.82rem;
+}
+
+#item-list-banner {
+  flex-shrink: 0;
+  margin: 0 10px 6px;
+}
+
+#item-list-banner .ui.message {
+  font-size: 0.78rem;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+#item-list-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+/* Note cards */
+.note-card {
+  padding: 10px 14px;
+  border-bottom: 1px solid #eae8e4;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background 0.12s;
+}
+
+.note-card:hover { background: #f3f1ee; }
+
+.note-card.active {
+  background: #eaf0f9;
+  border-left-color: #4a90d9;
+}
+
+.note-card-title {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.note-card-preview {
+  font-size: 0.78rem;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.note-card-meta {
+  font-size: 0.72rem;
+  color: #aaa;
+}
+
+.note-card-tag {
+  display: inline-block;
+  background: #eae8e4;
+  color: #666;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.7rem;
+  margin-top: 4px;
+}
+
+/* ── Content editor ─────────────────────────────────── */
+#content-editor {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  overflow-y: hidden;
+}
+
+/* Toolbar row */
+#editor-toolbar-row.ui.menu {
+  border-radius: 0;
+  border: none;
+  border-bottom: none !important;
+  box-shadow: none;
+  background: #fff;
+  margin: 0;
+  min-height: 46px;
+  padding: 0 6px;
+}
+
+#editor-toolbar-row .ui.transparent.input input {
+  font-size: 0.98rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  padding-left: 4px;
+}
+
+#editor-toolbar-row .item {
+  padding: 6px 8px;
+  color: #888;
+}
+
+#editor-toolbar-row .item:hover { color: #333; }
+
+/* Context strip */
+#editor-context-strip.ui.menu {
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #eae8e4 !important;
+  box-shadow: none;
+  background: #fafafa;
+  margin: 0;
+  min-height: 36px;
+  padding: 0 10px;
+}
+
+#editor-context-strip .item {
+  padding: 4px 6px;
+}
+
+#editor-context-strip .ui.label {
+  font-size: 0.73rem;
+  border-radius: 20px;
+  padding: 3px 10px;
+  background: #eae8e4;
+  color: #555;
+  border: none;
+  margin-right: 4px;
+}
+
+#editor-context-strip .ui.transparent.input input {
+  font-size: 0.78rem;
+  color: #aaa;
+  padding: 0;
+}
+
+/* Formatting toolbar */
+#editor-format-bar.ui.menu {
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #eae8e4 !important;
+  box-shadow: none;
+  background: #f8f7f5;
+  margin: 0;
+  min-height: 34px;
+}
+
+#editor-format-bar .item {
+  padding: 5px 10px;
+  color: #777;
+  font-size: 0.82rem;
+}
+
+#editor-format-bar .item:hover { background: #eee; color: #222; }
+#editor-format-bar .item.active { color: #4a90d9; }
+
+#editor-format-bar .divider {
+  width: 1px;
+  background: #ddd;
+  margin: 6px 2px;
+  align-self: stretch;
+}
+
+/* Body canvas */
+#editor-body-canvas {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 40px;
+}
+
+#editor-body-canvas textarea {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  resize: none;
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: #2a2a2a;
+  font-family: 'Georgia', serif;
+  background: transparent;
+}
+
+/* ── System bar ─────────────────────────────────────── */
+#system-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 0.72rem;
+  color: #888;
+}
+
+#system-bar-left,
+#system-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+#system-bar .sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5cb85c;
+  display: inline-block;
+  margin-right: 4px;
+}
+
+#system-bar a {
+  color: #4a90d9;
+  text-decoration: none;
+  font-weight: 500;
 }

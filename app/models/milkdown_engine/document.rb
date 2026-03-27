@@ -1,11 +1,21 @@
 # frozen_string_literal: true
 
 module MilkdownEngine
-  class MdDocument < ApplicationRecord
+  class Document < ApplicationRecord
     ChecklistItem = Data.define(:text, :checked)
     Heading       = Data.define(:level, :id, :text)
 
+    acts_as_taggable_on :tags
+
     validates :content, presence: true
+
+    def self.ransackable_attributes(auth_object = nil)
+      %w[title created_at updated_at]
+    end
+
+    def self.ransackable_associations(auth_object = nil)
+      %w[tags taggings]
+    end
 
     before_save :set_title_from_content, if: -> { title.blank? && content_changed? }
 
@@ -24,7 +34,7 @@ module MilkdownEngine
           (item #>> '{attrs,checked}')::boolean AS checked,
           string_agg(text_node #>> '{text}', '' ORDER BY text_ord) AS item_text
         FROM jsonb_path_query(
-          (SELECT content FROM milkdown_engine_md_documents WHERE id = :id),
+          (SELECT content FROM milkdown_engine_documents WHERE id = :id),
           'strict $.** ? (@.type == "list_item" && @.attrs.checked != null)'
         ) WITH ORDINALITY AS items(item, item_ord),
         jsonb_path_query(item, 'strict $.** ? (@.type == "text")') WITH ORDINALITY AS texts(text_node, text_ord)
@@ -46,7 +56,7 @@ module MilkdownEngine
           heading #>> '{attrs,id}'                AS id,
           string_agg(text_node #>> '{text}', '' ORDER BY text_ord) AS heading_text
         FROM jsonb_path_query(
-          (SELECT content FROM milkdown_engine_md_documents WHERE id = :id),
+          (SELECT content FROM milkdown_engine_documents WHERE id = :id),
           'strict $.** ? (@.type == "heading")'
         ) WITH ORDINALITY AS headings(heading, heading_ord),
         jsonb_path_query(heading, 'strict $.** ? (@.type == "text")') WITH ORDINALITY AS texts(text_node, text_ord)
@@ -69,8 +79,10 @@ module MilkdownEngine
     #
     # Instead we interpolate the quoted id via +:id+ and +connection.quote+.
     def exec_jsonb_query(sql)
-      quoted = sql.gsub(":id", self.class.connection.quote(id))
-      self.class.connection.select_all(quoted)
+      self.class.with_connection do |conn|
+        quoted = sql.gsub(":id", conn.quote(id))
+        conn.select_all(quoted)
+      end
     end
 
     # Walk the ProseMirror JSON tree in Ruby to find the first heading's text.
