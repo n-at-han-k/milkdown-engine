@@ -1,5 +1,7 @@
 # milkdown_engine
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/n-at-han-k/milkdown-engine)
+
 A template for creating Ruby gems.
 
 ## Usage
